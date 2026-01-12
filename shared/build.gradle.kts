@@ -55,4 +55,3 @@ compose.resources {
     publicResClass = true
     packageOfResClass = "com.yourcompany.yourapp.shared.resources"
 }
-
