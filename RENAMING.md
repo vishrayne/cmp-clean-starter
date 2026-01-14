@@ -1,15 +1,18 @@
 # Renaming Guide
 
 This guide walks you through renaming this template project for your own app without breaking
-IntelliJ IDEA/Android Studio.
+IntelliJ IDEA/Android Studio. The template uses several custom names that need updating across
+multiple modules.
 
 ## 📋 What Needs to Change
 
 1. Root project name
-2. Application ID and namespaces
-3. Package names in code
-4. iOS bundle identifier
-5. Directory structure (optional but recommended)
+2. Application ID and namespaces (3 modules: shared, designsystem, androidApp)
+3. Package names in all code files
+4. Custom Application class name (`YourNameApplication`)
+5. Theme and Typography names (`YourAppTheme`, `YourAppTypography`)
+6. iOS bundle identifier and display name
+7. Directory structure to match new packages
 
 ## 🔄 Step-by-Step Renaming Process
 
@@ -23,24 +26,26 @@ IntelliJ IDEA/Android Studio.
 
 ```kotlin
 // Change from:
-rootProject.name = "CMPDemo2"
+rootProject.name = "YourProjectName"
 
 // To:
-rootProject.name = "YourAppName"
+rootProject.name = "MyAwesomeApp"
 ```
 
-### Step 3: Update Android Application ID and Namespaces
+### Step 3: Update Application IDs and Namespaces
+
+You need to update three modules: `shared`, `designsystem`, and `androidApp`.
 
 #### In `androidApp/build.gradle.kts`:
 
 ```kotlin
 android {
     // Change namespace
-    namespace = "com.yourcompany.yourapp.android"
+    namespace = "com.mycompany.myapp.android"  // Your new package
 
     defaultConfig {
         // Change application ID
-        applicationId = "com.yourcompany.yourapp"
+        applicationId = "com.mycompany.myapp"  // Your new app ID
         // ... rest stays the same
     }
 }
@@ -52,7 +57,19 @@ android {
 kotlin {
     android {
         // Change namespace
-        namespace = "com.yourcompany.yourapp"
+        namespace = "com.mycompany.myapp"  // Your new package
+        // ... rest stays the same
+    }
+}
+```
+
+#### In `designsystem/build.gradle.kts`:
+
+```kotlin
+kotlin {
+    android {
+        // Change namespace
+        namespace = "com.mycompany.myapp.designsystem"  // Your new package
         // ... rest stays the same
     }
 }
@@ -66,86 +83,144 @@ kotlin {
 compose.resources {
     publicResClass = true
     // Change package
-    packageOfResClass = "com.yourcompany.yourapp.shared.resources"
+    packageOfResClass = "com.mycompany.myapp.shared.resources"
 }
 ```
 
-### Step 5: Update Package Names in Code
+### Step 5: Rename Custom Classes
 
-#### Update Shared Module Package
+You need to rename these custom class/object names in your code:
 
-1. Open Android Studio
-2. Navigate to `shared/src/commonMain/kotlin/com/example/cmpdemo2/`
-3. Right-click on the `cmpdemo2` package folder
-4. Select **Refactor** → **Rename**
-5. Choose **"Rename directory"**
-6. Enter your new package name: `yourapp`
-7. Click **Refactor**
-8. Repeat for parent directories if needed (`example` → `yourcompany`)
+#### 1. Application Class
 
-**Or manually:**
+**File**: `androidApp/src/main/kotlin/.../YourNameApplication.kt`
 
-```bash
-# Navigate to your project
-cd shared/src/commonMain/kotlin
+```kotlin
+// Change class name from:
+class YourNameApplication : Application()
 
-# Rename directories
-mv com/example/cmpdemo2 com/example/yourapp
-mv com/example com/yourcompany
+// To:
+class MyAwesomeApplication : Application()
 ```
 
-#### Update AndroidManifest.xml
-
-**File**: `androidApp/src/androidMain/AndroidManifest.xml`
+Also update in **`AndroidManifest.xml`**:
 
 ```xml
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application android:label="Your App Name"
-    ...>
-    <activity android:name=".MainActivity"
-    ...>
-</activity></application></manifest>
+<application android:name=".MyAwesomeApplication"...>
 ```
 
-#### Update MainActivity Package
+#### 2. Theme Name
 
-**File**: `androidApp/src/androidMain/kotlin/.../MainActivity.kt`
+**File**: `designsystem/src/commonMain/kotlin/.../theme/Theme.kt`
 
 ```kotlin
-// Change package
-package com.yourcompany.yourapp.android
+// Change function name from:
+@Composable
+fun YourAppTheme(...)
 
-import com.yourcompany.yourapp.App  // Update import
-// ... rest of the file
+// To:
+@Composable
+fun MyAwesomeTheme(...)
 ```
 
-**Rename directory structure:**
+#### 3. Typography Name
+
+**File**: `designsystem/src/commonMain/kotlin/.../theme/Type.kt`
+
+```kotlin
+// Change val name from:
+val YourAppTypography = Typography(...)
+
+// To:
+val MyAwesomeTypography = Typography(...)
+```
+
+And update its usage in `Theme.kt`:
+
+```kotlin
+MaterialTheme(
+    colorScheme = colorScheme,
+    typography = MyAwesomeTypography,  // Updated reference
+    content = content,
+)
+```
+
+### Step 6: Update Package Names Using Android Studio
+
+Now reopen Android Studio and use its powerful refactoring tools:
+
+#### Refactor Package Names
+
+1. **Open Android Studio** and let it index the project
+2. Navigate to any of these package folders:
+    - `shared/src/commonMain/kotlin/com/yourcompany/yourapp/`
+    - `designsystem/src/commonMain/kotlin/com/yourcompany/yourapp/designsystem/`
+    - `androidApp/src/main/kotlin/com/yourcompany/yourapp/android/`
+
+3. **Right-click on the package folder** (e.g., `yourapp`)
+4. Select **Refactor** → **Rename**
+5. Choose **"Rename directory"**
+6. Enter your new package name: `myapp`
+7. Click **Refactor**
+8. Android Studio will update imports across all files!
+9. **Repeat for parent directories** if needed (`yourcompany` → `mycompany`)
+
+**Pro tip**: Start from the deepest package level and work your way up.
+
+### Step 7: Update All Import Statements (Manual Verification)
+
+After refactoring, verify and update any remaining imports using Find & Replace:
+
+**Use Android Studio's Find and Replace** (Cmd/Ctrl + Shift + R):
+
+**Replace 1 - Main package:**
+
+- Find: `com.yourcompany.yourapp`
+- Replace: `com.mycompany.myapp`
+- Scope: Whole project
+- Click "Replace All"
+
+**Replace 2 - Resource package:**
+
+- Find: `com.yourcompany.yourapp.shared.resources`
+- Replace: `com.mycompany.myapp.shared.resources`
+- Scope: Whole project
+- Click "Replace All"
+
+**Replace 3 - Theme usages:**
+
+- Find: `YourAppTheme`
+- Replace: `MyAwesomeTheme`
+- Scope: Whole project
+- Click "Replace All"
+
+**Replace 4 - Typography usages:**
+
+- Find: `YourAppTypography`
+- Replace: `MyAwesomeTypography`
+- Scope: Whole project
+- Click "Replace All"
+
+### Step 8: Update Directory Structure
+
+Now rename the actual directories to match your new package names:
 
 ```bash
-cd androidApp/src/androidMain/kotlin
-mv com/example/cmpdemo2 com/yourcompany/yourapp
+# Navigate to each source root and rename directories
+cd shared/src/commonMain/kotlin
+mv com/yourcompany/yourapp com/mycompany/myapp
+
+cd designsystem/src/commonMain/kotlin
+mv com/yourcompany/yourapp com/mycompany/myapp
+
+cd androidApp/src/main/kotlin
+mv com/yourcompany/yourapp com/mycompany/myapp
+
+# Repeat for androidMain, iosMain, test directories as needed
 ```
 
-#### Update All Import Statements
-
-Use Android Studio's **Find and Replace** (Cmd/Ctrl + Shift + R):
-
-**Replace 1 - Package imports:**
-
-- Find: `com.example.cmpdemo2`
-- Replace: `com.yourcompany.yourapp`
-- Scope: Whole project
-- Click "Replace All"
-
-**Replace 2 - Resource imports:**
-
-- Find: `com.example.cmpdemo2.shared.resources`
-- Replace: `com.yourcompany.yourapp.shared.resources`
-- Scope: Whole project
-- Click "Replace All"
-
-### Step 6: Update iOS Bundle Identifier
+### Step 9: Update iOS Bundle Identifier
 
 1. Open `iosApp/iosApp.xcodeproj` in Xcode
 2. Select the **iosApp** project in the navigator
@@ -153,21 +228,46 @@ Use Android Studio's **Find and Replace** (Cmd/Ctrl + Shift + R):
 4. Go to the **General** tab
 5. Under **Identity**, change **Bundle Identifier**:
    ```
-   From: com.example.CMPDemo2
-   To:   com.yourcompany.YourAppName
+   From: com.yourcompany.YourProjectName
+   To:   com.mycompany.MyAwesomeApp
    ```
 
-### Step 7: Update iOS Display Name (Optional)
+### Step 10: Update iOS Display Name (Optional)
 
 In the same Xcode screen:
 
 1. Under **Identity**, change **Display Name**:
    ```
    From: iosApp
-   To:   Your App Name
+   To:   MyAwesomeApp
    ```
 
-### Step 8: Clean Build
+### Step 11: Update App Display Name
+
+**File**: `androidApp/src/main/res/values/strings.xml`
+
+```xml
+
+<resources>
+    <string name="app_name">MyAwesomeApp</string>
+</resources>
+```
+
+### Step 12: Update Test Package Names
+
+Update the test assertion in instrumentation tests:
+
+**File**: `androidApp/src/androidTest/kotlin/.../ExampleInstrumentedTest.kt`
+
+```kotlin
+@Test
+fun useAppContext() {
+    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+    assertEquals("com.mycompany.myapp", appContext.packageName)  // Updated
+}
+```
+
+### Step 13: Clean Build
 
 ```bash
 # Clean all build artifacts
@@ -178,16 +278,23 @@ rm -rf .gradle
 rm -rf .idea
 rm -rf */build
 rm -rf build
+
+# Delete KSP generated code
+rm -rf */build/generated
 ```
 
-### Step 9: Reopen in Android Studio
+### Step 14: Reopen in Android Studio
 
 1. **File** → **Open** → Select your project folder
-2. Wait for Gradle sync to complete
+2. Wait for Gradle sync and indexing to complete
 3. **Build** → **Rebuild Project**
-4. Run the Android app to verify everything works
+4. Run **Spotless** to format everything:
+   ```bash
+   ./gradlew spotlessApply
+   ```
+5. Run the Android app to verify
 
-### Step 10: Verify iOS (if applicable)
+### Step 15: Verify iOS (if applicable)
 
 1. In terminal: `./gradlew :shared:assembleSharedDebugXCFramework`
 2. Open `iosApp/iosApp.xcodeproj` in Xcode
@@ -200,24 +307,33 @@ After renaming, verify:
 
 - [ ] Android app builds and runs without errors
 - [ ] iOS app builds and runs without errors
-- [ ] No import errors in any files
+- [ ] No import errors in any files (check all modules)
 - [ ] Compose resources load correctly
+- [ ] Theme (`MyAwesomeTheme`) is applied correctly
+- [ ] Custom Application class (`MyAwesomeApplication`) is instantiated
+- [ ] Dependency injection works (check component creation)
 - [ ] App displays correct name on home screen
 - [ ] No deprecation warnings during build
-- [ ] Tests run successfully (if you have any)
+- [ ] Spotless formatting passes: `./gradlew spotlessCheck`
+- [ ] All tests run successfully
+- [ ] KSP code generation works (rebuild if needed)
 
-## 🎯 Quick Reference: File Locations
+## 🎯 Quick Reference: What to Rename
 
-| What to Change             | File Path                                               |
-|----------------------------|---------------------------------------------------------|
-| Root project name          | `settings.gradle.kts`                                   |
-| Android app ID & namespace | `androidApp/build.gradle.kts`                           |
-| Shared namespace           | `shared/build.gradle.kts`                               |
-| Resource package           | `shared/build.gradle.kts`                               |
-| MainActivity package       | `androidApp/src/androidMain/kotlin/.../MainActivity.kt` |
-| App code package           | `shared/src/commonMain/kotlin/.../App.kt`               |
-| Android manifest           | `androidApp/src/androidMain/AndroidManifest.xml`        |
-| iOS bundle ID              | Xcode project settings                                  |
+| What                     | Where                           | Example                                |
+|--------------------------|---------------------------------|----------------------------------------|
+| Root project name        | `settings.gradle.kts`           | `MyAwesomeApp`                         |
+| Application ID           | `androidApp/build.gradle.kts`   | `com.mycompany.myapp`                  |
+| Namespace (androidApp)   | `androidApp/build.gradle.kts`   | `com.mycompany.myapp.android`          |
+| Namespace (shared)       | `shared/build.gradle.kts`       | `com.mycompany.myapp`                  |
+| Namespace (designsystem) | `designsystem/build.gradle.kts` | `com.mycompany.myapp.designsystem`     |
+| Resource package         | `shared/build.gradle.kts`       | `com.mycompany.myapp.shared.resources` |
+| Application class        | `YourNameApplication.kt`        | `MyAwesomeApplication`                 |
+| Theme function           | `designsystem/.../Theme.kt`     | `MyAwesomeTheme`                       |
+| Typography object        | `designsystem/.../Type.kt`      | `MyAwesomeTypography`                  |
+| Package directories      | All `src/` folders              | `com/mycompany/myapp/...`              |
+| iOS bundle ID            | Xcode project settings          | `com.mycompany.MyAwesomeApp`           |
+| App name                 | `res/values/strings.xml`        | `MyAwesomeApp`                         |
 
 ## 🐛 Common Issues
 
@@ -236,31 +352,72 @@ After renaming, verify:
 
 ```bash
 ./gradlew clean
-rm -rf .gradle
+rm -rf .gradle */build build
 ```
 
 ### Issue: Resources not found after rename
 
-**Solution**: Make sure you updated the `packageOfResClass` in `shared/build.gradle.kts` and updated
-all imports.
+**Solution**:
+
+1. Verify `packageOfResClass` in `shared/build.gradle.kts`
+2. Update all resource imports
+3. Rebuild: `./gradlew :shared:build`
+
+### Issue: Dependency injection component not found
+
+**Solution**: KSP needs to regenerate code:
+
+```bash
+./gradlew clean
+./gradlew :shared:kspCommonMainKotlinMetadata
+./gradlew build
+```
+
+### Issue: Theme/Typography not found
+
+**Solution**: Check that you:
+
+1. Renamed the function/object in the definition file
+2. Updated all usages (use Find & Replace)
+3. Synced Gradle
+4. Rebuilt the project
+
+### Issue: Application class not instantiated
+
+**Solution**:
+
+1. Check `AndroidManifest.xml` has correct `android:name`
+2. Verify class name matches the one in manifest
+3. Clean and rebuild
 
 ### Issue: iOS app crashes on launch
 
 **Solution**: Rebuild the framework:
 
 ```bash
+./gradlew clean
 ./gradlew :shared:assembleSharedDebugXCFramework
 ```
 
 Then clean and rebuild in Xcode.
 
+### Issue: Spotless formatting fails after rename
+
+**Solution**: Auto-fix formatting:
+
+```bash
+./gradlew spotlessApply
+```
+
 ## 💡 Pro Tips
 
 1. **Use Android Studio's refactoring tools** - They automatically update imports and references
-2. **Do one step at a time** - Don't rename everything at once
-3. **Commit between steps** - Use git to track changes and rollback if needed
-4. **Test after each major change** - Catch issues early
-5. **Keep a backup** - Make a copy before starting if you're unsure
+2. **Do one module at a time** - Start with `shared`, then `designsystem`, then `androidApp`
+3. **Commit between major steps** - Use git to track changes and rollback if needed
+4. **Test after each module** - Catch issues early before moving to the next module
+5. **Keep a backup** - Copy the original template before starting
+6. **Run Spotless at the end** - Ensures consistent formatting: `./gradlew spotlessApply`
+7. **Rebuild KSP** - If DI isn't working, clean and rebuild to regenerate code
 
 ## 📝 Suggested Naming Conventions
 
@@ -285,16 +442,7 @@ Then clean and rebuild in Xcode.
 
 ### Application ID
 
-- Should match your package name
+- Should match your main package name
 - Must be unique on app stores
 - Example: `com.yourcompany.yourapp`
 
-### App Display Names
-
-- Use Title Case: "My Awesome App"
-- Keep it under 15 characters if possible
-- Should be memorable and brandable
-
----
-
-**Need help?** Open an issue on GitHub with the `question` label!
