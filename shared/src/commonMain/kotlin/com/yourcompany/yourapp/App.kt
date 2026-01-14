@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.yourcompany.yourapp.designsystem.Button
+import com.yourcompany.yourapp.designsystem.ButtonVariant
+import com.yourcompany.yourapp.designsystem.theme.YourAppTheme
 import com.yourcompany.yourapp.shared.resources.Res
 import com.yourcompany.yourapp.shared.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
@@ -27,7 +29,7 @@ fun App(
     greeting: Greeting,
     modifier: Modifier = Modifier,
 ) {
-    MaterialTheme {
+    YourAppTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = modifier
@@ -36,7 +38,10 @@ fun App(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Button(onClick = { showContent = !showContent }) {
+            Button(
+                variant = ButtonVariant.Primary,
+                onClick = { showContent = !showContent },
+            ) {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
