@@ -65,6 +65,9 @@ kotlin {
 dependencies {
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
+
+    implementation(libs.kotlin.inject.runtime)
+
     // For Compose Preview support in Android Studio
     debugImplementation(libs.androidx.compose.ui.tooling)
     testImplementation(libs.junit)

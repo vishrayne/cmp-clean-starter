@@ -20,15 +20,17 @@ import androidx.compose.ui.Modifier
 import com.yourcompany.yourapp.shared.resources.Res
 import com.yourcompany.yourapp.shared.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
-private fun App() {
+@Suppress("unused")
+fun App(
+    greeting: Greeting,
+    modifier: Modifier = Modifier,
+) {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .safeContentPadding()
                 .fillMaxSize(),
@@ -38,7 +40,7 @@ private fun App() {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
+                val greeting = remember { greeting.greet() }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,

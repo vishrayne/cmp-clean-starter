@@ -6,15 +6,20 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.yourcompany.yourapp.AndroidPlatform
 import com.yourcompany.yourapp.App
+import com.yourcompany.yourapp.Greeting
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        val component = (application as YourNameApplication)
+            .component
+
         setContent {
-            App()
+            App(component.greeting)
         }
     }
 }
@@ -22,5 +27,6 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 private fun AppAndroidPreview() {
-    App()
+    val greeting = Greeting(AndroidPlatform())
+    App(greeting)
 }

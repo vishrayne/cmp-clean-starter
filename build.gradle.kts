@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.androidLint) apply false
     alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.spotless) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 subprojects {

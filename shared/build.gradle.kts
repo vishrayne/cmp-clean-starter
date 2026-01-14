@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -50,6 +51,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.kotlin.inject.runtime)
+            implementation(libs.kotlin.inject.anvil.runtime)
+            implementation(libs.kotlin.inject.anvil.runtime.optional)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -60,4 +64,25 @@ kotlin {
 compose.resources {
     publicResClass = true
     packageOfResClass = "com.yourcompany.yourapp.shared.resources"
+}
+
+dependencies {
+    // 1. Common Dependencies
+    commonMainImplementation(libs.kotlin.inject.runtime)
+
+    // 2. KSP for Common (Metadata)
+    add("kspCommonMainMetadata", libs.kotlin.inject.compiler)
+    add("kspCommonMainMetadata", libs.kotlin.inject.anvil.compiler)
+
+    // KSP for Android
+    add("kspAndroid", libs.kotlin.inject.compiler)
+    add("kspAndroid", libs.kotlin.inject.anvil.compiler)
+
+    // KSP for iOS targets
+    add("kspIosArm64", libs.kotlin.inject.compiler)
+    add("kspIosArm64", libs.kotlin.inject.anvil.compiler)
+    add("kspIosSimulatorArm64", libs.kotlin.inject.compiler)
+    add("kspIosSimulatorArm64", libs.kotlin.inject.anvil.compiler)
+
+    lintChecks(libs.slack.compose.lints)
 }
